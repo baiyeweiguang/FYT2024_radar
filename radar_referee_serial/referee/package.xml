@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<package format="3">
+    <name>radar_referee</name>
+    <version>0.1.20</version>
+    <description>A template for ROS packages.</description>
+    <maintainer email="liaoqiayuan@gmail.com">Qiayuan Liao</maintainer>
+
+    <license>BSD</license>
+    <author email="liaoqiayuan@gmail.com">Qiayuan Liao</author>
+
+    <!-- buildtool_depend: dependency required for building the package -->
+    <buildtool_depend>ament_cmake</buildtool_depend>
+
+    <!-- build_depend: dependency required only during the build process -->
+    <build_depend>rclcpp</build_depend>
+    <build_depend>sensor_msgs</build_depend>
+    <build_depend>rm_msgs</build_depend>
+    <build_depend>std_msgs</build_depend>
+    <build_depend>nav_msgs</build_depend>
+    <build_depend>tf2_geometry_msgs</build_depend>
+    <build_depend>radar_interfaces</build_depend>
+    <build_depend>serial</build_depend>
+
+    <!-- exec_depend: runtime dependency -->
+    <exec_depend>rclcpp</exec_depend>
+    <exec_depend>sensor_msgs</exec_depend>
+    <exec_depend>rm_msgs</exec_depend>
+    <exec_depend>std_msgs</exec_depend>
+    <exec_depend>nav_msgs</exec_depend>
+    <exec_depend>radar_interfaces</exec_depend>
+    <exec_depend>tf2_geometry_msgs</exec_depend>
+    <exec_depend>serial</exec_depend>
+
+    <export>
+        <build_type>ament_cmake</build_type>
+    </export>
+
+    <!-- Use test_depend for dependencies required only for testing -->
+    <!-- test_depend>ament_lint_auto</test_depend>
+    <test_depend>ament_lint_common</test_depend -->
+    <!-- Uncomment if your package has messages, services or actions -->
+    <!-- member_of_group>rosidl_interface_packages</member_of_group -->
+</package>

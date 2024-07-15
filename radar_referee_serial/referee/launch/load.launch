@@ -1,0 +1,8 @@
+<launch>
+    <arg name="robot_type" default="$(env ROBOT_TYPE)" doc="Robot type [standard, hero, engineer]"/>
+
+    <rosparam file="$(find radar_referee)/config/$(arg robot_type).yaml" command="load"/>
+
+    <node name="radar_referee" pkg="radar_referee" type="radar_referee" respawn="false"/>
+
+</launch>

@@ -1,0 +1,8 @@
+/**:
+  ros__parameters:
+    camera_info_url: package://radar_bringup/config/camera_info.yaml
+    path: "/home/zcf/Downloads/雷达/视频3.mp4"
+    frame_rate: 10
+    start_frame: 0
+    frame_id: "camera_optical_frame"
+    keep_looping: true              #是否循环播放    

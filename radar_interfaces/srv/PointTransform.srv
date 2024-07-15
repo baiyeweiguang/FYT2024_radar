@@ -1,0 +1,4 @@
+radar_interfaces/Point[] points_in_image
+---
+radar_interfaces/Point[] points_in_radar
+bool success

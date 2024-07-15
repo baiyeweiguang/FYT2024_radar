@@ -1,0 +1,5 @@
+# 设置启动参数
+# true: 读取视频 false: 读取相机
+video_play: true 
+# true: 虚拟串口 false: 虚拟串口
+virtual_serial: true

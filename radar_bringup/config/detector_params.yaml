@@ -1,0 +1,13 @@
+radar_detector_node:
+  ros__parameters:
+    debug: true
+    car_model: car.onnx
+    armor_model: armor.pt
+    tracker_config: bytetrack.yaml
+    num_color: 2
+    color_names: ["Red", "Blue"]
+    num_classes: 6
+    class_names: ["1", "2", "3", "4", "5", "Sentry"]
+    device: "cuda:0"
+
+    
