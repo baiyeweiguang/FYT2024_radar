@@ -1,8 +1,8 @@
 #include "radar_calibrator/calibrator_node.hpp"
-#include "radar_calibrator/image_widget.hpp"
+#include "radar_calibrator/calibrator_widget.hpp"
 #include <chrono>
 
-CalibratorNode::CalibratorNode(std::shared_ptr<ImageWidget> window,
+CalibratorNode::CalibratorNode(std::shared_ptr<CalibratorWidget> window,
                                const rclcpp::NodeOptions &options)
     : Node("calibrator_node", options), window_(window) {
   lru_decider_ = std::make_unique<LruDecider>(this->get_clock());

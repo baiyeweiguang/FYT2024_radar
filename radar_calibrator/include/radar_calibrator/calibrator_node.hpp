@@ -7,14 +7,14 @@
 #include <rclcpp/timer.hpp>
 #include <sensor_msgs/msg/image.hpp>
 
-#include "radar_calibrator/image_widget.hpp"
+#include "radar_calibrator/calibrator_widget.hpp"
 #include "radar_calibrator/lru_decider.hpp"
 #include "radar_interfaces/msg/client_map_receive_data.hpp"
 #include "radar_interfaces/msg/detection_array.hpp"
 
 class CalibratorNode : public rclcpp::Node {
 public:
-  CalibratorNode(std::shared_ptr<ImageWidget> window,
+  CalibratorNode(std::shared_ptr<CalibratorWidget> window,
                  const rclcpp::NodeOptions &options = rclcpp::NodeOptions());
 
 private:
@@ -32,7 +32,7 @@ private:
       mark_info_pub_;
   rclcpp::TimerBase::SharedPtr timer_;
 
-  std::shared_ptr<ImageWidget> window_;
+  std::shared_ptr<CalibratorWidget> window_;
 
   std::unique_ptr<LruDecider> lru_decider_;
 };

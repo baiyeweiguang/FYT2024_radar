@@ -51,7 +51,7 @@ class Detector:
     
     # results = self.robot_detector_model.track(img, persist=True)[0]
 
-    if len(results.boxes) == 0:
+    if results.boxes is None or len(results.boxes) == 0:
       return []
     
     detector_results = []
@@ -66,7 +66,11 @@ class Detector:
     armors_list  = self.armor_model.predict(rois)
     for i, armors in enumerate(armors_list):
       box = results.boxes[i]
-      track_id = int(box.id.item())
+      
+      track_id = -1
+      if box.id is not None:
+        track_id = int(box.id.item())
+        
       detector_result = DetectorResult()
       detector_result.box = box
       detector_result.yolo_score = float(box.conf)
@@ -91,8 +95,9 @@ class Detector:
         detector_result.color = int(category >= 6)
         detector_result.category = category % 6
         detector_result.class_score = float(best_armor.conf)
-        
-      self.tracked[track_id] = detector_result
+      
+      if track_id != -1:  
+        self.tracked[track_id] = detector_result
         
       detector_results.append(detector_result)
         

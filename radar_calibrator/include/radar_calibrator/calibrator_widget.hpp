@@ -1,8 +1,8 @@
 // Created by Chengfu Zou
 // Copyright (C) FYT Vision Group. All rights reserved.
 
-#ifndef RADAR_CALIBRATOR__IMAGE_WIDGET_HPP_
-#define RADAR_CALIBRATOR__IMAGE_WIDGET_HPP_
+#ifndef RADAR_CALIBRATOR__CALIBRATOR_WIDGET_HPP_
+#define RADAR_CALIBRATOR__CALIBRATOR_WIDGET_HPP_
 
 // std
 #include <cstddef>
@@ -30,12 +30,12 @@ enum class State {
   PLANAR_MOVING,
 };
 
-class ImageWidget : public QWidget {
+class CalibratorWidget : public QWidget {
   // Q_OBJECT
 public:
-  ImageWidget(QWidget *parent = nullptr);
+  CalibratorWidget(QWidget *parent = nullptr);
 
-  virtual ~ImageWidget();
+  virtual ~CalibratorWidget();
 
   void setCameraImage(const cv::Mat &image);
 
@@ -86,4 +86,4 @@ private:
   QPoint mouse_press_pos_;
 };
 
-#endif // RADAR_CALIBRATOR__IMAGE_WIDGET_HPP_
+#endif // RADAR_CALIBRATOR__CALIBRATOR_WIDGET_HPP_

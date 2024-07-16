@@ -1,10 +1,15 @@
 #include "radar_calibrator/map_widget.hpp"
 #include "radar_calibrator/common.hpp"
 
+#include <ament_index_cpp/get_package_share_directory.hpp>
+
 #include <QPainter>
+#include <filesystem>
 
 MapWidget::MapWidget(QWidget *parent) : QWidget(parent) {
-  image_ = cv::imread("/home/zcf/Pictures/rmuc2023.png", cv::IMREAD_COLOR);
+  std::filesystem::path directory =
+      ament_index_cpp::get_package_share_directory("radar_calibrator");
+  image_ = cv::imread(directory / "resources/rmuc2023.png", cv::IMREAD_COLOR);
   if (enemey_color == 1) {
     cv::flip(image_, image_, 0);
     cv::flip(image_, image_, 1);

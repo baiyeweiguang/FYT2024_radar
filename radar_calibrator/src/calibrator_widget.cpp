@@ -1,4 +1,4 @@
-#include "radar_calibrator/image_widget.hpp"
+#include "radar_calibrator/calibrator_widget.hpp"
 
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <filesystem>
@@ -13,7 +13,7 @@ const std::vector<cv::Point2f> key_points = {
     cv::Point2f(366, 829), cv::Point2f(442, 703), cv::Point2f(33, 876),
     cv::Point2f(199, 912)};
 
-ImageWidget::ImageWidget(QWidget *parent) : QWidget(parent) {
+CalibratorWidget::CalibratorWidget(QWidget *parent) : QWidget(parent) {
   this->setMouseTracking(true);
   std::filesystem::path directory =
       ament_index_cpp::get_package_share_directory("radar_calibrator");
@@ -49,14 +49,14 @@ ImageWidget::ImageWidget(QWidget *parent) : QWidget(parent) {
   map_widget->show();
 }
 
-ImageWidget::~ImageWidget() { map_widget->close(); }
+CalibratorWidget::~CalibratorWidget() { map_widget->close(); }
 
-void ImageWidget::setCameraImage(const cv::Mat &image) {
+void CalibratorWidget::setCameraImage(const cv::Mat &image) {
   camera_image_ = addBorder(image);
   update();
 }
 
-cv::Mat ImageWidget::addBorder(const cv::Mat &image) {
+cv::Mat CalibratorWidget::addBorder(const cv::Mat &image) {
   // 定义边框的宽度，例如上1像素，下2像素，左3像素，右4像素
   int top = 50;
   int bottom = 400;
@@ -69,7 +69,7 @@ cv::Mat ImageWidget::addBorder(const cv::Mat &image) {
   return bordered;
 }
 
-cv::Point2f ImageWidget::projectToMap(const cv::Rect &box) {
+cv::Point2f CalibratorWidget::projectToMap(const cv::Rect &box) {
   const cv::Point2f offset = cv::Point2f(800, 50);
   float x = (box.tl().x + box.br().x) * 0.5;
   float y = box.tl().y * 0.08 + box.br().y * 0.92;
@@ -95,7 +95,7 @@ cv::Point2f ImageWidget::projectToMap(const cv::Rect &box) {
   return projected;
 }
 
-void ImageWidget::paintEvent(QPaintEvent *) {
+void CalibratorWidget::paintEvent(QPaintEvent *) {
   QPainter painter(this);
   cv::Mat projected = updateMapImage();
   cv::Mat final_image = camera_image_ | projected;
@@ -107,7 +107,7 @@ void ImageWidget::paintEvent(QPaintEvent *) {
   drawControlPoints(&painter);
 }
 
-void ImageWidget::keyPressEvent(QKeyEvent *event) {
+void CalibratorWidget::keyPressEvent(QKeyEvent *event) {
   if (event->key() == Qt::Key_C) {
     state_ = State::CALIBRATING;
     update();
@@ -121,7 +121,7 @@ void ImageWidget::keyPressEvent(QKeyEvent *event) {
   }
 }
 
-void ImageWidget::mousePressEvent(QMouseEvent *event) {
+void CalibratorWidget::mousePressEvent(QMouseEvent *event) {
   if (event->button() == Qt::LeftButton) {
     if (state_ == State::INIT) {
       planar_moving_point_ = cv::Point2f(0, 0);
@@ -146,7 +146,7 @@ void ImageWidget::mousePressEvent(QMouseEvent *event) {
   }
 }
 
-void ImageWidget::mouseMoveEvent(QMouseEvent *event) {
+void CalibratorWidget::mouseMoveEvent(QMouseEvent *event) {
   if (active_point_ != -1) {
     QPoint delta = event->pos() - mouse_press_pos_;
     moveControlPoint(active_point_, delta);
@@ -156,12 +156,12 @@ void ImageWidget::mouseMoveEvent(QMouseEvent *event) {
   }
 }
 
-void ImageWidget::mouseReleaseEvent(QMouseEvent *event) {
+void CalibratorWidget::mouseReleaseEvent(QMouseEvent *event) {
   active_point_ = -1;
   (void)event;
 }
 
-bool ImageWidget::isNearControlPoint(int x, int y, int idx) {
+bool CalibratorWidget::isNearControlPoint(int x, int y, int idx) {
   // 检查鼠标位置与控制点的距离是否足够近
   // 这里使用简单的距离计算，实际开发中可能需要更精细的逻辑
   cv::Point2f p = state_ == State::INIT ? projected_init_points_[idx]
@@ -172,7 +172,7 @@ bool ImageWidget::isNearControlPoint(int x, int y, int idx) {
   return sqrt(dx * dx + dy * dy) < tolerance;
 }
 
-void ImageWidget::moveControlPoint(int idx, QPoint delta) {
+void CalibratorWidget::moveControlPoint(int idx, QPoint delta) {
   if (state_ == State::PLANAR_MOVING) {
     planar_moving_point_.x += delta.x();
     planar_moving_point_.y += delta.y();
@@ -186,7 +186,7 @@ void ImageWidget::moveControlPoint(int idx, QPoint delta) {
   }
 }
 
-void ImageWidget::drawControlPoints(QPainter *painter) {
+void CalibratorWidget::drawControlPoints(QPainter *painter) {
   // 绘制控制点
   if (state_ == State::INIT) {
     painter->setPen(QPen(Qt::red, 3));
@@ -214,7 +214,7 @@ void ImageWidget::drawControlPoints(QPainter *painter) {
   }
 }
 
-void ImageWidget::updateProjectionMatrix() {
+void CalibratorWidget::updateProjectionMatrix() {
   if (state_ == State::INIT) {
     projection_A_ =
         cv::getPerspectiveTransform(init_points_, projected_init_points_);
@@ -278,7 +278,7 @@ void ImageWidget::updateProjectionMatrix() {
   }
 }
 
-cv::Mat ImageWidget::updateMapImage() {
+cv::Mat CalibratorWidget::updateMapImage() {
   cv::Mat projected;
   cv::warpPerspective(rmuc_map_image_, projected, projection_A_,
                       camera_image_.size());
