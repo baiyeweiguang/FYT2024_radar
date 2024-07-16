@@ -10,7 +10,8 @@ import asyncio
 from ultralytics import YOLO
 from ultralytics.nn.modules import Detect, v10Detect, C2f
 from ultralytics.engine.results import Results
-
+from ultralytics.data.augment import LetterBox
+from ultralytics.models.yolo.detect import DetectionPredictor
 from ..config import DetectorConfig
 
 class DetectorResult:
@@ -32,14 +33,20 @@ class Detector:
     self.armor_model = YOLO(cfg.armor_model, task='detect')
     self.tracked = {}
     
-    # 因为armor_model要动态输入，不能用onnx模型，所以手动将模型做导出设置
-    self.armor_model.fuse()
-    for m in self.armor_model.modules():
+    if cfg.car_model.split('.')[-1] == 'pt':
+      self.fuse_model(self.robot_detector_model)
+    if cfg.armor_model.split('.')[-1] == 'pt':
+      self.fuse_model(self.armor_model)
+
+  @staticmethod
+  def fuse_model(model: YOLO) -> None:
+    model.fuse()
+    for m in model.modules():
       if isinstance(m, Detect):  
-          m.format = ''
-          m.export = True
+        m.format = ''
+        m.export = True
       elif isinstance(m, C2f):
-          m.forward = m.forward_split
+        m.forward = m.forward_split
       
   def detect(self, aimg: np.ndarray) -> list:
     '''
@@ -49,8 +56,6 @@ class Detector:
     # 识别车辆
     results : Results = self.robot_detector_model.track(img, persist=True, tracker='bytetrack.yaml')[0]
     
-    # results = self.robot_detector_model.track(img, persist=True)[0]
-
     if results.boxes is None or len(results.boxes) == 0:
       return []
     
@@ -60,10 +65,9 @@ class Detector:
       x1, y1, x2, y2 = box.xyxy[0]
       
       roi = img[int(y1):int(y2), int(x1):int(x2), :]
-      # roi = cv2.resize(roi, (224,224))
       rois.append(roi)
 
-    armors_list  = self.armor_model.predict(rois)
+    armors_list  = self.armor_model.predict(rois, imgsz=224)
     for i, armors in enumerate(armors_list):
       box = results.boxes[i]
       

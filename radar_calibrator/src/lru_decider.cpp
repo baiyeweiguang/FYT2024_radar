@@ -4,7 +4,7 @@
 LruDecider::LruDecider(rclcpp::Clock::SharedPtr clock) : clock_(clock) {
   marks_.resize(6);
   for (int i = 0; i < 6; i++) {
-    marks_[i].mark_info.target_robot_id = i + 1;
+    marks_[i].detected = false;
     marks_[i].last_send_time = clock_->now();
   }
 }
@@ -47,9 +47,8 @@ LruDecider::getMarkInfo() {
   oldest->detected = false;
 
   auto mark = oldest->mark_info;
-  if (enemey_color == 1) {
-    mark.target_robot_id += 100;
-  }
+  mark.header.stamp = now;
+  mark.header.frame_id = "map";
 
-  return mark;
+  return oldest->mark_info;
 }

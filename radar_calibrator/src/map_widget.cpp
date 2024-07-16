@@ -9,7 +9,7 @@
 MapWidget::MapWidget(QWidget *parent) : QWidget(parent) {
   std::filesystem::path directory =
       ament_index_cpp::get_package_share_directory("radar_calibrator");
-  image_ = cv::imread(directory / "resources/rmuc2023.png", cv::IMREAD_COLOR);
+  image_ = cv::imread(directory / "resources/map_colorful.png", cv::IMREAD_COLOR);
   if (enemey_color == 1) {
     cv::flip(image_, image_, 0);
     cv::flip(image_, image_, 1);

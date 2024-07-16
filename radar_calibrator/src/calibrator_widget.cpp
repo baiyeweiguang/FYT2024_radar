@@ -17,10 +17,10 @@ CalibratorWidget::CalibratorWidget(QWidget *parent) : QWidget(parent) {
   this->setMouseTracking(true);
   std::filesystem::path directory =
       ament_index_cpp::get_package_share_directory("radar_calibrator");
-  rmuc_map_image_ = cv::imread(directory / "resources/rmuc.png");
+  rmuc_map_image_ = cv::imread(directory / "resources/map_contours.png");
 
   camera_image_ =
-      cv::imread(directory / "resources/camera.png", cv::IMREAD_COLOR);
+      cv::imread(directory / "resources/cover.png", cv::IMREAD_COLOR);
 
   terrain_mask_ = cv::imread(directory / "resources/terrain_mask.png",
                              cv::IMREAD_GRAYSCALE);
@@ -220,6 +220,7 @@ void CalibratorWidget::updateProjectionMatrix() {
         cv::getPerspectiveTransform(init_points_, projected_init_points_);
     cv::perspectiveTransform(key_points, projected_key_points_A_,
                              projection_A_);
+    projection_B_ = projection_A_.clone();
     projected_key_points_B_ = projected_key_points_A_;
   } else {
     double min_projection_error = 10000000;
@@ -279,8 +280,11 @@ void CalibratorWidget::updateProjectionMatrix() {
 }
 
 cv::Mat CalibratorWidget::updateMapImage() {
-  cv::Mat projected;
-  cv::warpPerspective(rmuc_map_image_, projected, projection_A_,
+  cv::Mat projected_A, projected_B;
+  cv::warpPerspective(rmuc_map_image_, projected_A, projection_A_,
                       camera_image_.size());
-  return projected;
+  cv::warpPerspective(rmuc_map_image_, projected_B, projection_B_,
+                      camera_image_.size());
+
+  return (projected_A | projected_B) * 0.5;
 }
