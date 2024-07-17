@@ -156,6 +156,7 @@ void CalibratorWidget::mouseMoveEvent(QMouseEvent *event) {
     moveControlPoint(active_point_, delta);
     mouse_press_pos_ = event->pos();
     updateProjectionMatrix();
+    updateMapImage();
     update();
   } else {
     if (state_ == State::INIT) {
