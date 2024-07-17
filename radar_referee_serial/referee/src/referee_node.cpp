@@ -445,15 +445,20 @@ int RefereeNode::unpack(uint8_t* rx_data)
           radar_interfaces::msg::ClientMapReceiveData client_map_receive_data;
           memcpy(&client_map_receive_ref, rx_data + 7, sizeof(radar_referee::ClientMapReceiveData));
 
-          if (client_map_receive_ref.target_robot_ID == base_.robot_id_)
-          {
-            client_map_receive_data.target_robot_id = client_map_receive_ref.target_robot_ID;
-            client_map_receive_data.target_position_x = client_map_receive_ref.target_position_x;
-            client_map_receive_data.target_position_y = client_map_receive_ref.target_position_y;
-            client_map_receive_data.header.stamp = last_get_data_time_;
+          client_map_receive_data.engineer_position_x = client_map_receive_ref.engineer_position_x;
+          client_map_receive_data.engineer_position_y = client_map_receive_ref.engineer_position_y;
+          client_map_receive_data.hero_position_x = client_map_receive_ref.hero_position_x;
+          client_map_receive_data.hero_position_y = client_map_receive_ref.hero_position_y;
+          client_map_receive_data.infantry_3_position_x = client_map_receive_ref.infantry_3_position_x;
+          client_map_receive_data.infantry_3_position_y = client_map_receive_ref.infantry_3_position_y;
+          client_map_receive_data.infantry_4_position_x = client_map_receive_ref.infantry_4_position_x;
+          client_map_receive_data.infantry_4_position_y = client_map_receive_ref.infantry_4_position_y;
+          client_map_receive_data.infantry_5_position_x = client_map_receive_ref.infantry_5_position_x;
+          client_map_receive_data.infantry_5_position_y = client_map_receive_ref.infantry_5_position_y;
+          client_map_receive_data.sentry_position_x = client_map_receive_ref.sentry_position_x;
+          client_map_receive_data.sentry_position_y = client_map_receive_ref.sentry_position_y;
 
-            client_map_receive_pub_->publish(client_map_receive_data);
-          }
+          client_map_receive_pub_->publish(client_map_receive_data);
           break;
         }
         case radar_referee::CUSTOM_INFO_CMD:

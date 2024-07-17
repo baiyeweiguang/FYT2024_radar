@@ -133,10 +133,21 @@ void RefereeComm::radarDataCallBack(const radar_interfaces::msg::TargetInfoArray
 
 void RefereeComm::radarReceiveCallback(const radar_interfaces::msg::ClientMapReceiveData::ConstSharedPtr data)
 {
+  
   radar_referee::ClientMapReceiveData radar_receive_data;
-  radar_receive_data.target_position_x = data->target_position_x;
-  radar_receive_data.target_position_y = data->target_position_y;
-  radar_receive_data.target_robot_ID = data->target_robot_id;
+  radar_receive_data.hero_position_x = data->hero_position_x;
+  radar_receive_data.hero_position_y = data->hero_position_y;
+  radar_receive_data.engineer_position_x = data->engineer_position_x;
+  radar_receive_data.engineer_position_y = data->engineer_position_y;
+  radar_receive_data.infantry_3_position_x = data->infantry_3_position_x;
+  radar_receive_data.infantry_3_position_y = data->infantry_3_position_y;
+  radar_receive_data.infantry_4_position_x = data->infantry_4_position_x;
+  radar_receive_data.infantry_4_position_y = data->infantry_4_position_y;
+  radar_receive_data.infantry_5_position_x = data->infantry_5_position_x;
+  radar_receive_data.infantry_5_position_y = data->infantry_5_position_y;
+  radar_receive_data.sentry_position_x = data->sentry_position_x;
+  radar_receive_data.sentry_position_y = data->sentry_position_y;
+
   if ((clock_->now() - radar_interactive_data_last_send_).seconds() <= 1.0 / 100)
   {
     RCLCPP_WARN(rclcpp::get_logger("radar_referee"), "radarReceiveCallback: time interval too short: %f hz",

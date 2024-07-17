@@ -44,6 +44,7 @@ CalibratorWidget::CalibratorWidget(QWidget *parent) : QWidget(parent) {
   projection_B_ = cv::Mat::eye(3, 3, CV_64F);
 
   camera_image_ = addBorder(camera_image_);
+  updateMapImage();
 
   map_widget = std::make_unique<MapWidget>();
   map_widget->show();
@@ -52,7 +53,11 @@ CalibratorWidget::CalibratorWidget(QWidget *parent) : QWidget(parent) {
 CalibratorWidget::~CalibratorWidget() { map_widget->close(); }
 
 void CalibratorWidget::setCameraImage(const cv::Mat &image) {
+  cv::Size old_size = camera_image_.size();
   camera_image_ = addBorder(image);
+  if (old_size != camera_image_.size()) {
+    updateMapImage();
+  }
   update();
 }
 
@@ -97,8 +102,7 @@ cv::Point2f CalibratorWidget::projectToMap(const cv::Rect &box) {
 
 void CalibratorWidget::paintEvent(QPaintEvent *) {
   QPainter painter(this);
-  cv::Mat projected = updateMapImage();
-  cv::Mat final_image = camera_image_ | projected;
+  cv::Mat final_image = camera_image_ | projection_vis_;
   setFixedSize(final_image.cols, final_image.rows);
   cv::cvtColor(final_image, final_image, cv::COLOR_BGR2RGB);
   QImage qImage(final_image.data, final_image.cols, final_image.rows,
@@ -152,6 +156,7 @@ void CalibratorWidget::mouseMoveEvent(QMouseEvent *event) {
     moveControlPoint(active_point_, delta);
     mouse_press_pos_ = event->pos();
     updateProjectionMatrix();
+    updateMapImage();
     update();
   }
 }
@@ -279,12 +284,12 @@ void CalibratorWidget::updateProjectionMatrix() {
   }
 }
 
-cv::Mat CalibratorWidget::updateMapImage() {
+void CalibratorWidget::updateMapImage() {
   cv::Mat projected_A, projected_B;
   cv::warpPerspective(rmuc_map_image_, projected_A, projection_A_,
                       camera_image_.size());
   cv::warpPerspective(rmuc_map_image_, projected_B, projection_B_,
                       camera_image_.size());
 
-  return (projected_A | projected_B) * 0.5;
+  projection_vis_ = (projected_A | projected_B) * 0.5;
 }

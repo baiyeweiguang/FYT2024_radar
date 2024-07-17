@@ -10,7 +10,7 @@ class Config:
     self.device = "cuda:0"
     self.color_names = ["Blue", "Red", "Unkonw"]
     self.class_names = ["1","2", "3", "4", "5", "Sentry"]
-    self.category_to_id = {0:1, 1:2, 2:3, 3:4, 4:5, 5:7}
+    self.category_to_id = {0:1, 1:2, 2:3, 3:4, 4:5, 5:6}
     self.extract_roi = False
     self.debug = True
     

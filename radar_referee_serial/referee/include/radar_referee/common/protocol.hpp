@@ -374,6 +374,7 @@ typedef struct
 typedef struct
 {
   uint32_t sentry_info;
+  uint16_t sentry_info_2; 
 } __packed SentryInfo;
 
 // 官方文档中的radar_info_t 0x020E
@@ -505,9 +506,18 @@ typedef struct
 //雷达发给裁判系统
 typedef struct
 {
-  uint16_t target_robot_ID;
-  float target_position_x;
-  float target_position_y;
+  uint16_t hero_position_x;
+  uint16_t hero_position_y;
+  uint16_t engineer_position_x;
+  uint16_t engineer_position_y;
+  uint16_t infantry_3_position_x;
+  uint16_t infantry_3_position_y;
+  uint16_t infantry_4_position_x;
+  uint16_t infantry_4_position_y;
+  uint16_t infantry_5_position_x;
+  uint16_t infantry_5_position_y;
+  uint16_t sentry_position_x;
+  uint16_t sentry_position_y; 
 } __packed ClientMapReceiveData;
 
 // 官方文档中的map_data_t 0x0307

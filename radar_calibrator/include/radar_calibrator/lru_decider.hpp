@@ -12,22 +12,22 @@
 
 class LruDecider {
 
-public:
-  LruDecider(rclcpp::Clock::SharedPtr clock);
+// public:
+//   LruDecider(rclcpp::Clock::SharedPtr clock);
 
-  void update(const radar_interfaces::msg::ClientMapReceiveData &msg);
+//   void update(const radar_interfaces::msg::ClientMapReceiveData &msg);
 
-  std::optional<radar_interfaces::msg::ClientMapReceiveData> getMarkInfo();
+//   std::optional<radar_interfaces::msg::ClientMapReceiveData> getMarkInfo();
 
-private:
-  rclcpp::Clock::SharedPtr clock_;
+// private:
+//   rclcpp::Clock::SharedPtr clock_;
 
-  struct MarkStamped {
-    radar_interfaces::msg::ClientMapReceiveData mark_info;
-    bool detected = false;
-    rclcpp::Time last_send_time;
-  };
-  std::vector<MarkStamped> marks_;
+//   struct MarkStamped {
+//     radar_interfaces::msg::ClientMapReceiveData mark_info;
+//     bool detected = false;
+//     rclcpp::Time last_send_time;
+//   };
+//   std::vector<MarkStamped> marks_;
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include <sensor_msgs/msg/image.hpp>
 
 #include "radar_calibrator/calibrator_widget.hpp"
+#include "radar_calibrator/common.hpp"
 #include "radar_calibrator/lru_decider.hpp"
 #include "radar_interfaces/msg/client_map_receive_data.hpp"
 #include "radar_interfaces/msg/detection_array.hpp"
@@ -34,6 +35,7 @@ private:
 
   std::shared_ptr<CalibratorWidget> window_;
 
-  std::unique_ptr<LruDecider> lru_decider_;
+  std::vector<RobotPosition> marks_;
+  // std::unique_ptr<LruDecider> lru_decider_;
 };
 #endif

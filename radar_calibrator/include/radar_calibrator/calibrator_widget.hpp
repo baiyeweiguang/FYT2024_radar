@@ -65,9 +65,10 @@ private:
 
   void updateProjectionMatrix();
 
-  cv::Mat updateMapImage();
+  void updateMapImage();
 
   cv::Mat camera_image_;
+  cv::Mat projection_vis_;
   cv::Mat rmuc_map_image_;
   cv::Mat terrain_mask_;
   QImage q_image_;

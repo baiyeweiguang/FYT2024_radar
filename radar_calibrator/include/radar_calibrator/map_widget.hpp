@@ -8,6 +8,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/opencv.hpp>
 
+#include "radar_calibrator/common.hpp"
 #include "radar_interfaces/msg/client_map_receive_data.hpp"
 
 class MapWidget : public QWidget {
@@ -16,8 +17,7 @@ public:
 
   virtual ~MapWidget() {}
 
-  void setTargets(
-      const std::vector<radar_interfaces::msg::ClientMapReceiveData> &targets) {
+  void setTargets(const std::vector<RobotPosition> &targets) {
     targets_ = targets;
     update();
   }
@@ -25,7 +25,7 @@ public:
 private:
   virtual void paintEvent(QPaintEvent *) override;
 
-  std::vector<radar_interfaces::msg::ClientMapReceiveData> targets_;
+  std::vector<RobotPosition> targets_;
   cv::Mat image_;
   int acceptable_radius_ = 10;
 };

@@ -111,9 +111,22 @@ void Sender::sendRadarInteractiveData(const radar_referee::ClientMapReceiveData&
 
   for (int i = 0; i < 128; i++)
     tx_buffer_[i] = 0;
-  radar_interactive_data->target_robot_ID = data.target_robot_ID;
-  radar_interactive_data->target_position_x = data.target_position_x;
-  radar_interactive_data->target_position_y = data.target_position_y;
+
+  radar_interactive_data->engineer_position_x = data.engineer_position_x;
+  radar_interactive_data->engineer_position_y = data.engineer_position_y;
+  radar_interactive_data->hero_position_x = data.hero_position_x;
+  radar_interactive_data->hero_position_y = data.hero_position_y;
+  radar_interactive_data->infantry_3_position_x = data.infantry_3_position_x;
+  radar_interactive_data->infantry_3_position_y = data.infantry_3_position_y;
+  radar_interactive_data->infantry_4_position_x = data.infantry_4_position_x;
+  radar_interactive_data->infantry_4_position_y = data.infantry_4_position_y;
+  radar_interactive_data->infantry_5_position_x = data.infantry_5_position_x;
+  radar_interactive_data->infantry_5_position_y = data.infantry_5_position_y;
+  radar_interactive_data->sentry_position_x = data.sentry_position_x;
+  radar_interactive_data->sentry_position_y = data.sentry_position_y;
+  // radar_interactive_data->target_robot_ID = data.target_robot_ID;
+  // radar_interactive_data->target_position_x = data.target_position_x;
+  // radar_interactive_data->target_position_y = data.target_position_y;
   pack(tx_buffer_, tx_data, radar_referee::RefereeCmdId::CLIENT_MAP_CMD, sizeof(radar_referee::ClientMapReceiveData));
   tx_len_ = k_header_length_ + k_cmd_id_length_ +
             static_cast<int>(sizeof(radar_referee::ClientMapReceiveData) + k_tail_length_);
