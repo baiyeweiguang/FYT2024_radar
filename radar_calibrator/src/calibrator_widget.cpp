@@ -156,8 +156,24 @@ void CalibratorWidget::mouseMoveEvent(QMouseEvent *event) {
     moveControlPoint(active_point_, delta);
     mouse_press_pos_ = event->pos();
     updateProjectionMatrix();
-    updateMapImage();
     update();
+  } else {
+    if (state_ == State::INIT) {
+      for (int i = 0; i < 4; ++i) {
+        if (isNearControlPoint(event->x(), event->y(), i)) {
+          QCursor::setPos(mapToGlobal(QPoint(projected_init_points_[i].x,
+                                             projected_init_points_[i].y)));
+        }
+      }
+    } else if (state_ == State::CALIBRATING) {
+      int size = projected_key_points_A_.size();
+      for (int i = 0; i < size; ++i) {
+        if (isNearControlPoint(event->x(), event->y(), i)) {
+          QCursor::setPos(mapToGlobal(QPoint(projected_key_points_A_[i].x,
+                                             projected_key_points_A_[i].y)));
+        }
+      }
+    }
   }
 }
 
