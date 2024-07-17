@@ -42,7 +42,6 @@ include_directories(
 ament_auto_add_executable(${PROJECT_NAME}_node 
   src/main.cpp
   src/calibrator_node.cpp
-  src/lru_decider.cpp
   src/calibrator_widget.cpp
   src/map_widget.cpp
 )

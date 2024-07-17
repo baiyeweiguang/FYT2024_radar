@@ -50,7 +50,7 @@ CalibratorWidget::CalibratorWidget(QWidget *parent) : QWidget(parent) {
   map_widget->show();
 }
 
-CalibratorWidget::~CalibratorWidget() { map_widget->close(); }
+CalibratorWidget::~CalibratorWidget() {  }
 
 void CalibratorWidget::setCameraImage(const cv::Mat &image) {
   cv::Size old_size = camera_image_.size();
