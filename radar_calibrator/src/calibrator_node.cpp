@@ -6,7 +6,6 @@
 CalibratorNode::CalibratorNode(std::shared_ptr<CalibratorWidget> window,
                                const rclcpp::NodeOptions &options)
     : Node("calibrator_node", options), window_(window) {
-  // lru_decider_ = std::make_unique<LruDecider>(this->get_clock());
   marks_.resize(12);
   // 0-5: red robots, 6-11: blue robots
   for (int i = 0; i < 6; i++) {
