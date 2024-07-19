@@ -67,6 +67,12 @@ private:
 
   void updateMapImage();
 
+  // border
+  int top_;
+  int bottom_;
+  int left_;
+  int right_;
+
   cv::Mat camera_image_;
   cv::Mat projection_vis_;
   cv::Mat rmuc_map_image_;

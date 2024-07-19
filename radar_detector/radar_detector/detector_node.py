@@ -52,13 +52,16 @@ class DetectorNode(Node):
     图像回调
     '''    
     start_time = self.get_clock().now()
-    img = self.cv_bridge.imgmsg_to_cv2(msg, "rgb8")
-    ori_img = img.copy() if self.cfg.debug else None
+    ori_img = self.cv_bridge.imgmsg_to_cv2(msg, "rgb8")
+    scaled_img = ori_img
     
-    img_width = img.shape[1]
-    img_height = img.shape[0]
+    if ori_img.shape[0] > 1024:
+      scaled_img = cv2.resize(src=ori_img, dsize=None, fx=0.5, fy=0.5)
+    
+    img_width = scaled_img.shape[1]
+    img_height = scaled_img.shape[0]
 
-    results : list[DetectorResult] = self.detector.detect(img)
+    results : list[DetectorResult] = self.detector.detect(ori_img=ori_img, scaled_img=scaled_img)
     
     detection_array_msg = DetectionArray()
     detection_array_msg.header = msg.header
@@ -95,15 +98,15 @@ class DetectorNode(Node):
           line_color = (0, 0, 255)
         else:
           line_color = (255, 255, 255)
-        cv2.rectangle(ori_img, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), line_color, 2)
-        cv2.putText(ori_img, "{}, {:.2f}".format(detection_msg.class_name, detection_msg.obj_score), (int(xyxy[0]), int(xyxy[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, line_color, 2)
+        cv2.rectangle(scaled_img, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), line_color, 2)
+        cv2.putText(scaled_img, "{}, {:.2f}".format(detection_msg.class_name, detection_msg.obj_score), (int(xyxy[0]), int(xyxy[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, line_color, 2)
     
     self.detection_pub.publish(detection_array_msg)
     end_time = self.get_clock().now()
     if self.cfg.debug:
       latency = end_time - start_time
-      cv2.putText(ori_img, "latency: {:.2f}ms".format(latency.nanoseconds / 1e6), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-      debug_msg = self.cv_bridge.cv2_to_imgmsg(ori_img, "rgb8")
+      cv2.putText(scaled_img, "latency: {:.2f}ms".format(latency.nanoseconds / 1e6), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+      debug_msg = self.cv_bridge.cv2_to_imgmsg(scaled_img, "rgb8")
       self.debug_pub.publish(debug_msg)
     
 def main() -> None:

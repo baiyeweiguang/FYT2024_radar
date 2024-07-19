@@ -31,8 +31,7 @@ CalibratorWidget::CalibratorWidget(QWidget *parent) : QWidget(parent) {
   // rmuc_map_image_.rows; cv::resize(rmuc_map_image_, rmuc_map_image_,
   // cv::Size(), scale, scale); initial_points_ = {cv::Point2f(0, 0),
   // cv::Point2f(0, rmuc_map_image_.rows),
-  //                    cv::Point2f(rmuc_map_image_.cols,
-  //                    rmuc_map_image_.rows),
+  //                    cv::Point2f(rmuc_map_image_.cols, rmuc_map_image_.rows),
   //                    cv::Point2f(rmuc_map_image_.cols, 0)};
 
   init_points_ = {key_points[0], key_points[4], key_points[18], key_points[16]};
@@ -50,7 +49,7 @@ CalibratorWidget::CalibratorWidget(QWidget *parent) : QWidget(parent) {
   map_widget->show();
 }
 
-CalibratorWidget::~CalibratorWidget() {  }
+CalibratorWidget::~CalibratorWidget() {}
 
 void CalibratorWidget::setCameraImage(const cv::Mat &image) {
   cv::Size old_size = camera_image_.size();
@@ -63,19 +62,19 @@ void CalibratorWidget::setCameraImage(const cv::Mat &image) {
 
 cv::Mat CalibratorWidget::addBorder(const cv::Mat &image) {
   // 定义边框的宽度，例如上1像素，下2像素，左3像素，右4像素
-  int top = 50;
-  int bottom = 400;
-  int left = 800;
-  int right = 800;
+  top_ = 0;
+  bottom_ = std::max(image.rows, rmuc_map_image_.rows) - image.rows;
+  left_ = rmuc_map_image_.cols;
+  right_ = rmuc_map_image_.cols;
   // 复制图片并添加边框
   cv::Mat bordered;
-  cv::copyMakeBorder(image, bordered, top, bottom, left, right,
+  cv::copyMakeBorder(image, bordered, top_, bottom_, left_, right_,
                      cv::BORDER_CONSTANT, cv::Scalar(0, 0, 0));
   return bordered;
 }
 
 cv::Point2f CalibratorWidget::projectToMap(const cv::Rect &box) {
-  const cv::Point2f offset = cv::Point2f(800, 50);
+  const cv::Point2f offset = cv::Point2f(left_, top_);
   float x = (box.tl().x + box.br().x) * 0.5;
   float y = box.tl().y * 0.08 + box.br().y * 0.92;
 
@@ -166,15 +165,16 @@ void CalibratorWidget::mouseMoveEvent(QMouseEvent *event) {
                                              projected_init_points_[i].y)));
         }
       }
-    } else if (state_ == State::CALIBRATING) {
-      int size = projected_key_points_A_.size();
-      for (int i = 0; i < size; ++i) {
-        if (isNearControlPoint(event->x(), event->y(), i)) {
-          QCursor::setPos(mapToGlobal(QPoint(projected_key_points_A_[i].x,
-                                             projected_key_points_A_[i].y)));
-        }
-      }
-    }
+    } 
+    // else if (state_ == State::CALIBRATING) {
+    //   int size = projected_key_points_A_.size();
+    //   for (int i = 0; i < size; ++i) {
+    //     if (isNearControlPoint(event->x(), event->y(), i)) {
+    //       QCursor::setPos(mapToGlobal(QPoint(projected_key_points_A_[i].x,
+    //                                          projected_key_points_A_[i].y)));
+    //     }
+    //   }
+    // }
   }
 }
 

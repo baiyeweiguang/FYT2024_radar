@@ -48,13 +48,14 @@ class Detector:
       elif isinstance(m, C2f):
         m.forward = m.forward_split
       
-  def detect(self, aimg: np.ndarray) -> list:
+  def detect(self, ori_img: np.ndarray, scaled_img: np.ndarray) -> list:
     '''
     识别车辆并分类
-    '''    
-    img = cv2.cvtColor(aimg, cv2.COLOR_BGR2RGB)
+    '''
+    scale = ori_img.shape[0] / scaled_img.shape[0]
+    
     # 识别车辆
-    results : Results = self.robot_detector_model.track(img, persist=True, tracker='bytetrack.yaml')[0]
+    results : Results = self.robot_detector_model.track(scaled_img, persist=True, tracker='bytetrack.yaml')[0]
     
     if results.boxes is None or len(results.boxes) == 0:
       return []
@@ -62,9 +63,10 @@ class Detector:
     detector_results = []
     rois = []
     for box in results.boxes:
-      x1, y1, x2, y2 = box.xyxy[0]
-      
-      roi = img[int(y1):int(y2), int(x1):int(x2), :]
+      x1, y1, x2, y2 = box.xyxy[0] * scale
+      roi = ori_img[int(y1):int(y2), int(x1):int(x2), :]
+      # rgb to bgr
+      roi = cv2.cvtColor(roi, cv2.COLOR_RGB2BGR)
       rois.append(roi)
 
     armors_list  = self.armor_model.predict(rois, imgsz=224)
