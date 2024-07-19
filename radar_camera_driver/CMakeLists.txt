@@ -18,6 +18,7 @@ ament_auto_find_build_dependencies()
 
 ament_auto_add_library(${PROJECT_NAME} SHARED
   src/hik_camera_node.cpp
+  src/recorder.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC hikSDK/include)

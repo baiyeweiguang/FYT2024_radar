@@ -97,6 +97,10 @@ public:
           camera_info_msg_.header = image_msg_.header;
           camera_pub_.publish(image_msg_, camera_info_msg_);
 
+          if (recorder_) {
+            recorder_->addFrame(image_msg_.data);
+          }
+
           MV_CC_FreeImageBuffer(camera_handle_, &out_frame);
           fail_conut_ = 0;
         } else {
@@ -153,16 +157,12 @@ private:
     RCLCPP_INFO(this->get_logger(), "Gain: %f", gain);
 
     // Recorder
-    bool recording = this->declare_parameter("recording", false);
-    if (recording) {
-      std::string home = std::getenv("HOME");
-
-      namespace fs = std::filesystem;
-      std::filesystem::path video_path = fs::path(home) / "/fyt2024-log/video/" /
-                                         std::string(std::to_string(std::time(nullptr)) + ".avi");
-
+    std::string recorder_path = this->declare_parameter("save_path", "");
+    if (!recorder_path.empty()) {
       recorder_ = std::make_unique<Recorder>(
-        video_path, 20, cv::Size(img_info_.nWidthValue, img_info_.nHeightValue));
+        recorder_path, 20, cv::Size(img_info_.nWidthValue, img_info_.nHeightValue));
+      RCLCPP_INFO(this->get_logger(), "Recording to: %s", recorder_path.c_str());
+
       recorder_->start();
     }
   }
