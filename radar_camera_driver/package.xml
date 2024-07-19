@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>radar_camera_driver</name>
+  <name>hik_camera</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="11@qq.com">zcf</maintainer>
+  <maintainer email="1258124282@qq.com">nolem</maintainer>
   <license>TODO: License declaration</license>
 
   <!-- buildtool_depend: dependencies of the build process -->
@@ -14,9 +14,9 @@
   <depend>rclcpp</depend>
   <depend>rclcpp_components</depend>
   <depend>sensor_msgs</depend>
+  <depend>opencv</depend>
   <depend>image_transport</depend>
   <depend>image_transport_plugins</depend>
-  <depend>rm_utils</depend>
   <depend>camera_info_manager</depend>
 
   <exec_depend>camera_calibration</exec_depend>

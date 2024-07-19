@@ -39,15 +39,15 @@ def generate_launch_description():
     # 图像
     if launch_params['video_play']: 
         image_node  = Node(
-            package="radar_camera_driver",
+            package="hik_camera",
             executable="video_player_node",
             parameters=[video_params],
             output="screen",
         )
     else:
         image_node = Node(
-            package="radar_camera_driver",
-            executable="radar_camera_driver_node",
+            package="hik_camera",
+            executable="hik_camera_node",
             parameters=[camera_params],
             output="screen",
         )
@@ -77,6 +77,6 @@ def generate_launch_description():
             detector_node,
             image_node,
             calibrator_node,
-            serial_node
+            # serial_node
         ]
     )

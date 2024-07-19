@@ -33,7 +33,7 @@ namespace fyt::camera_driver {
 class VideoPlayerNode : public rclcpp::Node {
 public:
   explicit VideoPlayerNode(const rclcpp::NodeOptions &options)
-  : Node("camera_driver", options), frame_cnt_(0) {
+  : Node("video_player", options), frame_cnt_(0) {
     RCLCPP_INFO(this->get_logger(), "Starting VideoPlayerNode!");
     // Get parameters
     video_path = this->declare_parameter("path", "/home/zcf/Downloads/雷达/视频2.mp4");
@@ -137,3 +137,10 @@ private:
 
 #include "rclcpp_components/register_node_macro.hpp"
 RCLCPP_COMPONENTS_REGISTER_NODE(fyt::camera_driver::VideoPlayerNode)
+
+int main(int argc, char * argv[]) {
+  rclcpp::init(argc, argv);
+  rclcpp::spin(std::make_shared<fyt::camera_driver::VideoPlayerNode>(rclcpp::NodeOptions()));
+  rclcpp::shutdown();
+  return 0;
+}

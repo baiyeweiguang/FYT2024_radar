@@ -1,59 +1,59 @@
 cmake_minimum_required(VERSION 3.8)
-project(radar_camera_driver)
+project(hik_camera)
 
-## Use C++17
-set(CMAKE_CXX_STANDARD 17)
+## Use C++14
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 ## By adding -Wall and -Werror, the compiler does not ignore warnings anymore,
 ## enforcing cleaner code.
-add_definitions(-Wall -Werror -O3)
+add_definitions(-Wall -Werror)
 
 ## Export compile commands for clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(ament_cmake_auto REQUIRED)
+find_package(OpenCV 4 REQUIRED)
 ament_auto_find_build_dependencies()
 
-find_package(OpenCV REQUIRED)
-
 ament_auto_add_library(${PROJECT_NAME} SHARED
-  src/daheng_camera.cpp
-  src/recorder.cpp
-  src/video_player.cpp
+  src/hik_camera_node.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PUBLIC include ${OpenCV_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC hikSDK/include)
 
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64")
-  target_link_directories(${PROJECT_NAME} PUBLIC lib/x86_64)
+  target_link_directories(${PROJECT_NAME} PUBLIC hikSDK/lib/amd64)
   install(
-    DIRECTORY lib/x86_64
+    DIRECTORY hikSDK/lib/amd64/
     DESTINATION lib
   )
-#elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
-#  target_link_directories(${PROJECT_NAME} PUBLIC hikSDK/lib/arm64)
-#  install(
-#    DIRECTORY hikSDK/lib/arm64/
-#    DESTINATION lib
-#  )
+elseif(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+  target_link_directories(${PROJECT_NAME} PUBLIC hikSDK/lib/arm64)
+  install(
+    DIRECTORY hikSDK/lib/arm64/
+    DESTINATION lib
+  )
 else()
   message(FATAL_ERROR "Unsupport host system architecture: ${CMAKE_HOST_SYSTEM_PROCESSOR}!")
 endif()
 
 target_link_libraries(${PROJECT_NAME}
-  libgxiapi.so
+  FormatConversion
+  MediaProcess
+  MvCameraControl
+  MVRender
+  MvUsb3vTL
   ${OpenCV_LIBS}
 )
 
 rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN fyt::camera_driver::DahengCameraNode
+  PLUGIN fyt::camera_driver::HikCameraNode
   EXECUTABLE ${PROJECT_NAME}_node
 )
 
-rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN fyt::camera_driver::VideoPlayerNode
-  EXECUTABLE video_player_node
+ament_auto_add_executable(video_player_node
+  src/video_player.cpp
 )
 
 if(BUILD_TESTING)
@@ -68,4 +68,6 @@ endif()
 
 ament_auto_package(
   INSTALL_TO_SHARE
+  config
+  launch
 )
