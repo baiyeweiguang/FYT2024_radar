@@ -2,16 +2,17 @@
 
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <filesystem>
+#include <opencv2/core/types.hpp>
 #include <qnamespace.h>
 
 const std::vector<cv::Point2f> key_points = {
-    cv::Point2f(15, 141),  cv::Point2f(192, 216), cv::Point2f(181, 317),
-    cv::Point2f(471, 214), cv::Point2f(622, 164), cv::Point2f(624, 345),
-    cv::Point2f(63, 549),  cv::Point2f(65, 423),  cv::Point2f(129, 423),
-    cv::Point2f(245, 548), cv::Point2f(483, 524), cv::Point2f(64, 705),
-    cv::Point2f(259, 768), cv::Point2f(241, 830), cv::Point2f(344, 765),
-    cv::Point2f(366, 829), cv::Point2f(442, 703), cv::Point2f(33, 876),
-    cv::Point2f(199, 912)};
+    cv::Point2f(19, 132),  cv::Point2f(514, 128), cv::Point2f(26, 740),
+    cv::Point2f(352, 561), cv::Point2f(512, 239), cv::Point2f(156, 184),
+    cv::Point2f(409, 116), cv::Point2f(133, 285), cv::Point2f(428, 228),
+    cv::Point2f(20, 443),  cv::Point2f(53, 435),  cv::Point2f(191, 426),
+    cv::Point2f(224, 613), cv::Point2f(276, 613), cv::Point2f(369, 417),
+    cv::Point2f(61, 563),  cv::Point2f(207, 668), cv::Point2f(293, 665),
+    cv::Point2f(171, 796), cv::Point2f(191, 729)};
 
 CalibratorWidget::CalibratorWidget(QWidget *parent) : QWidget(parent) {
   this->setMouseTracking(true);
@@ -34,7 +35,7 @@ CalibratorWidget::CalibratorWidget(QWidget *parent) : QWidget(parent) {
   //                    cv::Point2f(rmuc_map_image_.cols, rmuc_map_image_.rows),
   //                    cv::Point2f(rmuc_map_image_.cols, 0)};
 
-  init_points_ = {key_points[0], key_points[4], key_points[18], key_points[16]};
+  init_points_ = {key_points[0], key_points[1], key_points[2], key_points[3]};
   projected_init_points_ = init_points_;
 
   projected_key_points_A_ = key_points;
@@ -92,7 +93,7 @@ cv::Point2f CalibratorWidget::projectToMap(const cv::Rect &box) {
   cv::Point2f projected;
   projected.x = out[0].y / rmuc_map_image_.rows * 28.0;
   projected.y = out[0].x / rmuc_map_image_.cols * 15.0;
-  if (enemey_color == 1) {
+  if (ENEMY_COLOR == BLUE) {
     projected.x = 28.0 - projected.x;
     projected.y = 15.0 - projected.y;
   }
@@ -145,6 +146,7 @@ void CalibratorWidget::mousePressEvent(QMouseEvent *event) {
     } else if (state_ == State::PLANAR_MOVING) {
       active_point_ = 0;
       mouse_press_pos_ = event->pos();
+      // planar_moving_point_ = cv::Point2f(event->pos().x(), event->pos().y());
     }
   }
 }
@@ -165,7 +167,7 @@ void CalibratorWidget::mouseMoveEvent(QMouseEvent *event) {
                                              projected_init_points_[i].y)));
         }
       }
-    } 
+    }
     // else if (state_ == State::CALIBRATING) {
     //   int size = projected_key_points_A_.size();
     //   for (int i = 0; i < size; ++i) {
@@ -196,8 +198,9 @@ bool CalibratorWidget::isNearControlPoint(int x, int y, int idx) {
 
 void CalibratorWidget::moveControlPoint(int idx, QPoint delta) {
   if (state_ == State::PLANAR_MOVING) {
-    planar_moving_point_.x += delta.x();
-    planar_moving_point_.y += delta.y();
+    constexpr float SCALE = 0.12;
+    planar_moving_point_.x += delta.x() * SCALE;
+    planar_moving_point_.y += delta.y() * SCALE;
   } else {
     cv::Point2f &p = state_ == State::INIT ? projected_init_points_[idx]
                                            : projected_key_points_A_[idx];

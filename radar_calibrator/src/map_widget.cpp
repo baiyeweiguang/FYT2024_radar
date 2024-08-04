@@ -11,7 +11,7 @@ MapWidget::MapWidget(QWidget *parent) : QWidget(parent) {
       ament_index_cpp::get_package_share_directory("radar_calibrator");
   image_ =
       cv::imread(directory / "resources/map_colorful.png", cv::IMREAD_COLOR);
-  if (enemey_color == 1) {
+  if (ENEMY_COLOR == BLUE) {
     cv::flip(image_, image_, 0);
     cv::flip(image_, image_, 1);
   }
@@ -26,7 +26,7 @@ void MapWidget::paintEvent(QPaintEvent *) {
     cv::Point2f p;
     p.x = target.y / 15.0 * final_image.cols;
     p.y = target.x / 28.0 * final_image.rows;
-    if (enemey_color == 1) {
+    if (ENEMY_COLOR == BLUE) {
       p.x = final_image.cols - p.x;
       p.y = final_image.rows - p.y;
     }

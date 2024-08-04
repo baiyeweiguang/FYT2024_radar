@@ -77,6 +77,6 @@ def generate_launch_description():
             detector_node,
             image_node,
             calibrator_node,
-            # serial_node
+            serial_node
         ]
     )

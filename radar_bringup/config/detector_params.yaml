@@ -2,7 +2,7 @@ radar_detector_node:
   ros__parameters:
     debug: true
     car_model: car.pt
-    armor_model: armor.pt
+    armor_model: armor_new2.pt
     tracker_config: bytetrack.yaml
     num_color: 2
     color_names: ["Red", "Blue"]

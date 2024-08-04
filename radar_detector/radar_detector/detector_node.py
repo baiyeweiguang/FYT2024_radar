@@ -99,7 +99,7 @@ class DetectorNode(Node):
         else:
           line_color = (255, 255, 255)
         cv2.rectangle(scaled_img, (int(xyxy[0]), int(xyxy[1])), (int(xyxy[2]), int(xyxy[3])), line_color, 2)
-        cv2.putText(scaled_img, "{}, {:.2f}".format(detection_msg.class_name, detection_msg.obj_score), (int(xyxy[0]), int(xyxy[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, line_color, 2)
+        cv2.putText(scaled_img, "{}, {:.2f}".format(detection_msg.class_name, detection_msg.class_score), (int(xyxy[0]), int(xyxy[1])), cv2.FONT_HERSHEY_SIMPLEX, 1, line_color, 2)
     
     self.detection_pub.publish(detection_array_msg)
     end_time = self.get_clock().now()

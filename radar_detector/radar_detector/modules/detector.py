@@ -55,8 +55,8 @@ class Detector:
     scale = ori_img.shape[0] / scaled_img.shape[0]
     
     # 识别车辆
-    results : Results = self.robot_detector_model.track(scaled_img, persist=True, tracker='bytetrack.yaml')[0]
-    
+    results : Results = self.robot_detector_model.track(scaled_img, persist=True, tracker='bytetrack.yaml', conf=0.15)[0]
+    #results = self.robot_detector_model.predict(scaled_img, conf=0.15)[0]
     if results.boxes is None or len(results.boxes) == 0:
       return []
     
@@ -69,7 +69,7 @@ class Detector:
       roi = cv2.cvtColor(roi, cv2.COLOR_RGB2BGR)
       rois.append(roi)
 
-    armors_list  = self.armor_model.predict(rois, imgsz=224)
+    armors_list  = self.armor_model.predict(rois, imgsz=224, conf=0.7)
     for i, armors in enumerate(armors_list):
       box = results.boxes[i]
       

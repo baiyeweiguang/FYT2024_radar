@@ -3,6 +3,7 @@
 //
 
 #include "radar_referee/referee_comm.hpp"
+#include <rclcpp/logger.hpp>
 #include <rclcpp/logging.hpp>
 
 namespace radar_referee
@@ -133,7 +134,7 @@ void RefereeComm::radarDataCallBack(const radar_interfaces::msg::TargetInfoArray
 
 void RefereeComm::radarReceiveCallback(const radar_interfaces::msg::ClientMapReceiveData::ConstSharedPtr data)
 {
-  
+  // RCLCPP_INFO(rclcpp::get_logger("radar_referee"), "received!");
   radar_referee::ClientMapReceiveData radar_receive_data;
   radar_receive_data.hero_position_x = data->hero_position_x;
   radar_receive_data.hero_position_y = data->hero_position_y;

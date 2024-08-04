@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <rclcpp/logging.hpp>
 #include <rclcpp/node_options.hpp>
 #include <rclcpp/rclcpp.hpp>
 
@@ -81,6 +82,7 @@ public:
     });
     // referee_comm
     referee_comm_ = std::make_unique<radar_referee::RefereeComm>(this->create_sub_node("referee_comm"), base_);
+    RCLCPP_INFO(this->get_logger(), "Referee Node Started!");
   };
   void read();
   void clearRxBuffer()
