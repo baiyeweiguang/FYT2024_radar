@@ -438,6 +438,7 @@ typedef struct {
 
 // 官方文档中的radar_cmd_t 0x0121
 typedef struct {
+  InteractiveDataHeader header;
   uint8_t radar_cmd;
 } __packed RadarCmd;
 

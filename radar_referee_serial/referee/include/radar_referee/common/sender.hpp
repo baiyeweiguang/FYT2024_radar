@@ -23,6 +23,7 @@ public:
   void sendInteractiveData(int data_cmd_id, int receiver_id, unsigned char data);
   void sendRadarInteractiveData(const radar_referee::ClientMapReceiveData& data);
   void sendMapSentryData(const radar_referee::MapSentryData& data);
+  void sendRadarCmdData(const radar_referee::RadarCmd& data);
   // void sendCurrentSentryData(const radar_interfaces::msg::CurrentSentryPosDataConstPtr& data);
   void sendCustomInfoData(std::wstring data);
 

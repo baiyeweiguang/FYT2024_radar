@@ -494,6 +494,9 @@ int RefereeNode::unpack(uint8_t* rx_data)
         {
           radar_referee::RadarInfo radar_info;
           memcpy(&radar_info, rx_data + 7, sizeof(radar_referee::RadarInfo));
+          radar_interfaces::msg::RadarInfo msg;
+          msg.radar_info = radar_info.radar_info;
+          radar_info_pub_->publish(msg);
           break;
         }
         case radar_referee::POWER_MANAGEMENT_SAMPLE_AND_STATUS_DATA_CMD:

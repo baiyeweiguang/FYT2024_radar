@@ -44,6 +44,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/referee/ManualToReferee.msg"
   "msg/referee/RadarData.msg"
   "msg/referee/RadarMarkData.msg"
+  "msg/referee/RadarCmd.msg"
   "msg/referee/RobotsPositionData.msg"
   "msg/referee/ClientMapSendData.msg"
   "msg/referee/ClientMapReceiveData.msg"

@@ -1,6 +1,7 @@
 #include "radar_calibrator/calibrator_node.hpp"
 #include "radar_calibrator/calibrator_widget.hpp"
 #include "radar_calibrator/common.hpp"
+#include <algorithm>
 #include <chrono>
 #include <cstddef>
 
@@ -27,10 +28,44 @@ CalibratorNode::CalibratorNode(std::shared_ptr<CalibratorWidget> window,
       create_publisher<radar_interfaces::msg::ClientMapReceiveData>("/rm_radar",
                                                                     10);
 
+  radar_info_sub_ = create_subscription<radar_interfaces::msg::RadarInfo>(
+      "/radar_info", 10,
+      std::bind(&CalibratorNode::radarInfoCallback, this,
+                std::placeholders::_1));
+
+  radar_cmd_pub_ =
+      create_publisher<radar_interfaces::msg::RadarCmd>("/radar_cmd", 10);
+
   int freq = 5;
   int period = static_cast<int>(1000 / freq);
   timer_ = create_wall_timer(std::chrono::milliseconds(period),
                              std::bind(&CalibratorNode::timerCallback, this));
+
+  last_buff_time_ = this->now();
+  cmd_msg_.radar_cmd = 0;
+  decision_ = create_wall_timer(std::chrono::milliseconds(1000), [this]() {
+    int detected_num =
+        std::count_if(marks_.begin(), marks_.end(), [](const auto &mark) {
+          return mark.x > 0 && mark.y > 0;
+        });
+
+    if (cmd_msg_.radar_cmd >= 3) {
+      cmd_msg_.radar_cmd = 0;
+    }
+
+    if (buff_num_ > 0 && detected_num >= 3 &&
+        (now() - last_buff_time_).seconds() > 50) {
+      last_buff_time_ = this->now();
+      cmd_msg_.radar_cmd++;
+      radar_cmd_pub_->publish(cmd_msg_);
+      RCLCPP_INFO(this->get_logger(), "double buff!");
+    } else if (detected_num >= 4) {
+      last_buff_time_ = this->now();
+      cmd_msg_.radar_cmd++;
+      RCLCPP_INFO(this->get_logger(), ">= 4 enemy found! double buff!");
+      radar_cmd_pub_->publish(cmd_msg_);
+    } 
+  });
 }
 
 void CalibratorNode::imageCallback(
@@ -72,6 +107,11 @@ void CalibratorNode::detectionCallback(
   }
 
   window_->map_widget->setTargets(marks_);
+}
+
+void CalibratorNode::radarInfoCallback(
+    const radar_interfaces::msg::RadarInfo::SharedPtr msg) {
+  buff_num_ = msg->radar_info & 0b00000011;
 }
 
 void CalibratorNode::timerCallback() {

@@ -10,7 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/model', ['model/armor.onnx', 'model/armor.pt', 'model/armor_new2.pt', 'model/armor_new.pt', 'model/car.onnx', 'model/car.pt']),],
+        ('share/' + package_name + '/model', ['model/armor.onnx', 'model/armor.pt', 'model/armor_new2.pt', 'model/car.onnx', 'model/car.pt']),],
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='zcf',

@@ -56,7 +56,7 @@ def generate_launch_description():
         package="radar_detector",
         executable="radar_detector_node",
         parameters=[detector_params],
-        output="screen",
+        # output="screen",
     )
 
 

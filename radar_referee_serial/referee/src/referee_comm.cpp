@@ -3,8 +3,11 @@
 //
 
 #include "radar_referee/referee_comm.hpp"
+#include "radar_referee/common/protocol.hpp"
 #include <rclcpp/logger.hpp>
 #include <rclcpp/logging.hpp>
+
+#include "radar_interfaces/msg/radar_cmd.hpp"
 
 namespace radar_referee
 {
@@ -21,6 +24,14 @@ RefereeComm::RefereeComm(rclcpp::Node::SharedPtr nh, SerialBase& base) : base_(b
   // radar_to_sentry_sub_ = node->create_subscription<radar_interfaces::msg::CurrentSentryPosData>(
   // "/radar_to_sentry", 10, std::bind(&RefereeComm::sendCurrentSentryCallback, this, std::placeholders::_1));
   //"/bullet_allowance_data"
+
+  radar_cmd_sub_ = node->create_subscription<radar_interfaces::msg::RadarCmd>(
+      "/radar_cmd", 10, [this](const radar_interfaces::msg::RadarCmd::ConstSharedPtr data) {
+        RadarCmd cmd;
+        cmd.radar_cmd = data->radar_cmd;
+        RCLCPP_INFO(rclcpp::get_logger("radar_referee"), "radar_cmd: %d", cmd.radar_cmd);
+        interactive_data_sender_->sendRadarCmdData(cmd);
+      });
 
   interactive_data_sender_ = new Sender(clock_, base_);
   RCLCPP_INFO(node->get_logger(), "RefereeComm initialized successfully!");
@@ -134,7 +145,7 @@ void RefereeComm::radarDataCallBack(const radar_interfaces::msg::TargetInfoArray
 
 void RefereeComm::radarReceiveCallback(const radar_interfaces::msg::ClientMapReceiveData::ConstSharedPtr data)
 {
-  // RCLCPP_INFO(rclcpp::get_logger("radar_referee"), "received!");
+  // RCLCPP_INFO(rclcpp::get_logger("radar_referee"), "send marks!");
   radar_referee::ClientMapReceiveData radar_receive_data;
   radar_receive_data.hero_position_x = data->hero_position_x;
   radar_receive_data.hero_position_y = data->hero_position_y;

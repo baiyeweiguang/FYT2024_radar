@@ -4,6 +4,8 @@
 #ifndef RADAR_REFEREE_REFEREE_COMM_HPP_
 #define RADAR_REFEREE_REFEREE_COMM_HPP_
 
+#include <radar_interfaces/msg/detail/radar_cmd__struct.hpp>
+#include <radar_interfaces/msg/detail/radar_data__struct.hpp>
 #include <sys/types.h>
 #include <cstdint>
 #include <deque>
@@ -54,6 +56,8 @@ public:
 private:
   rclcpp::Subscription<radar_interfaces::msg::ManualToReferee>::SharedPtr manual_sub_;
   rclcpp::Subscription<radar_interfaces::msg::ClientMapReceiveData>::SharedPtr radar_receive_sub_;
+  rclcpp::Subscription<radar_interfaces::msg::RadarCmd>::SharedPtr radar_cmd_sub_;
+  // rclcpp::Subscription<radar_interfaces::msg::RadarData>
   // rclcpp::Subscription<radar_interfaces::msg::SentryDeviate>::SharedPtr sentry_deviate_sub_;
   // rclcpp::Subscription<radar_interfaces::msg::MapSentryData>::SharedPtr map_sentry_sub_;
 

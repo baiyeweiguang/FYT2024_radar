@@ -6,7 +6,7 @@
 #include <qnamespace.h>
 
 const std::vector<cv::Point2f> key_points = {
-    cv::Point2f(19, 132),  cv::Point2f(514, 128), cv::Point2f(26, 740),
+    cv::Point2f(19, 132),  cv::Point2f(514, 128), cv::Point2f(56, 719),
     cv::Point2f(352, 561), cv::Point2f(512, 239), cv::Point2f(156, 184),
     cv::Point2f(409, 116), cv::Point2f(133, 285), cv::Point2f(428, 228),
     cv::Point2f(20, 443),  cv::Point2f(53, 435),  cv::Point2f(191, 426),
